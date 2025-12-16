@@ -25,4 +25,14 @@ router.post("/", authMiddleware, async (req, res) => {
   });
 });
 
+// Get all habits for logged-in user
+router.get("/", authMiddleware, async (req, res) => {
+  const habits = await Habit.find({ user: req.user.userId }).sort({
+    createdAt: -1,
+  });
+
+  res.json(habits);
+});
+
+
 export default router;
