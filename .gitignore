@@ -1,0 +1,7 @@
+# Ignore dependencies
+node_modules
+server/node_modules
+
+# Ignore environment variables (secrets)
+.env
+server/.env
