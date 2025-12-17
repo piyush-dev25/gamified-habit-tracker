@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 import habitRoutes from "./routes/habitRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import cors from "cors";
 
 
 dotenv.config();
@@ -27,6 +28,8 @@ app.get("/api/protected", authMiddleware, (req, res) => {
 app.use("/api/habits", habitRoutes);
 
 app.use("/api/users", userRoutes);
+
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Server is running");
