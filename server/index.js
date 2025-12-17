@@ -4,6 +4,8 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 import habitRoutes from "./routes/habitRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+
 
 dotenv.config();
 connectDB();
@@ -23,6 +25,8 @@ app.get("/api/protected", authMiddleware, (req, res) => {
 });
 
 app.use("/api/habits", habitRoutes);
+
+app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
   res.send("Server is running");
