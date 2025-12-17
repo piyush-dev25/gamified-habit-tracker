@@ -1,6 +1,7 @@
 import express from "express";
 import Habit from "../models/Habit.js";
 import authMiddleware from "../middleware/authMiddleware.js";
+import User from "../models/User.js";
 
 const router = express.Router();
 
@@ -79,11 +80,25 @@ router.patch("/:id/done", authMiddleware, async (req, res) => {
     habit.lastCompletedDate = todayDate;
     await habit.save();
 
+    // 🎮 Add points to user
+    const user = await User.findById(req.user.userId);
+    user.points += 10;
+
+    // Update level based on points
+    user.level = Math.floor(user.points / 100) + 1;
+
+    await user.save();
+
 
     res.json({
         message: "Habit marked as done",
         habit,
+        user: {
+            points: user.points,
+            level: user.level,
+        },
     });
+
 });
 
 export default router;
