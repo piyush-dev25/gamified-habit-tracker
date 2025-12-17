@@ -1,12 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import authMiddleware from "./middleware/authMiddleware.js";
 import habitRoutes from "./routes/habitRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
-import cors from "cors";
-
 
 dotenv.config();
 connectDB();
@@ -14,6 +14,7 @@ connectDB();
 const app = express();
 const PORT = 5000;
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
@@ -28,8 +29,6 @@ app.get("/api/protected", authMiddleware, (req, res) => {
 app.use("/api/habits", habitRoutes);
 
 app.use("/api/users", userRoutes);
-
-app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Server is running");
