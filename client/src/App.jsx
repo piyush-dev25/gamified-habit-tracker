@@ -1,18 +1,25 @@
-import { useEffect } from "react";
-import { testBackend } from "./api/api";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
+  const { token } = useAuth();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <div className="bg-white p-8 rounded-2xl shadow-2xl">
-        <h1 className="text-3xl font-bold text-indigo-600">
-          Tailwind v4 is working 🚀
-        </h1>
-        <p className="mt-4 text-gray-600">
-          If this is styled, setup is correct.
-        </p>
-      </div>
-    </div>
+    <Routes>
+      <Route
+        path="/"
+        element={
+          token ? <Navigate to="/dashboard" /> : <Login />
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          token ? <div>Dashboard (coming next)</div> : <Navigate to="/" />
+        }
+      />
+    </Routes>
   );
 }
 
