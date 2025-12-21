@@ -24,9 +24,37 @@ function Dashboard() {
             const habitsData = await habitsRes.json();
             setHabits(habitsData);
         }
-        
+
         fetchData();
     }, [token]);
+
+    async function handleDone(habitId) {
+        const res = await fetch(
+            `http://localhost:5000/api/habits/${habitId}/done`,
+            {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) return;
+
+        // Update habit in UI
+        setHabits((prev) =>
+            prev.map((h) => (h._id === habitId ? data.habit : h))
+        );
+
+        // Update profile stats
+        setProfile((prev) => ({
+            ...prev,
+            points: data.user.points,
+            level: data.user.level,
+        }));
+    }
 
 
     if (!profile) {
@@ -86,8 +114,13 @@ function Dashboard() {
                             </p>
                         ) : (
                             habits.map((habit) => (
-                                <HabitCard key={habit._id} habit={habit} />
+                                <HabitCard
+                                    key={habit._id}
+                                    habit={habit}
+                                    onDone={handleDone}
+                                />
                             ))
+
                         )}
                     </div>
 
@@ -114,7 +147,12 @@ function StatCard({ label, value }) {
     );
 }
 
-function HabitCard({ habit }) {
+function HabitCard({ habit, onDone }) {
+    const completedToday =
+        habit.lastCompletedDate &&
+        new Date(habit.lastCompletedDate).toDateString() ===
+        new Date().toDateString();
+
     return (
         <div className="bg-slate-800 rounded-xl p-4 flex items-center justify-between">
             <div>
@@ -125,13 +163,19 @@ function HabitCard({ habit }) {
             </div>
 
             <button
-                disabled
-                className="px-4 py-2 rounded-lg bg-slate-700 text-slate-400 cursor-not-allowed"
+                onClick={() => onDone(habit._id)}
+                disabled={completedToday}
+                className={`px-4 py-2 rounded-lg font-semibold transition
+          ${completedToday
+                        ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                        : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                    }`}
             >
-                Done
+                {completedToday ? "Done ✓" : "Done"}
             </button>
         </div>
     );
 }
+
 
 export default Dashboard;
