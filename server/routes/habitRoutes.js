@@ -101,4 +101,21 @@ router.patch("/:id/done", authMiddleware, async (req, res) => {
 
 });
 
+// Delete habit
+router.delete("/:id", authMiddleware, async (req, res) => {
+    const habit = await Habit.findOne({
+        _id: req.params.id,
+        user: req.user.userId,
+    });
+
+    if (!habit) {
+        return res.status(404).json({ message: "Habit not found" });
+    }
+
+    await habit.deleteOne();
+
+    res.json({ message: "Habit deleted" });
+});
+
+
 export default router;

@@ -15,8 +15,12 @@ function App() {
           token ? <Navigate to="/dashboard" /> : <Login />
         }
       />
+      <Route
+        path="/login"
+        element={token ? <Navigate to="/dashboard" /> : <Login />}
+      />
+
       <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
       <Route
         path="/dashboard"
         element={

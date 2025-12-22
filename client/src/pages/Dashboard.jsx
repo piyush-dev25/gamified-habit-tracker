@@ -111,6 +111,30 @@ function Dashboard() {
 
     }
 
+    async function handleDeleteHabit(habitId) {
+        const confirmed = window.confirm(
+            "Are you sure you want to delete this habit?"
+        );
+
+        if (!confirmed) return;
+
+        const res = await fetch(
+            `http://localhost:5000/api/habits/${habitId}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        console.log("Delete response status:", res.status);
+        if (!res.ok) return;
+
+        // Remove habit from UI instantly
+        setHabits((prev) => prev.filter((h) => h._id !== habitId));
+    }
+
 
     if (!profile) {
         return (
@@ -190,6 +214,7 @@ function Dashboard() {
                                     key={habit._id}
                                     habit={habit}
                                     onDone={handleDone}
+                                    onDelete={handleDeleteHabit}
                                 />
                             ))
 
@@ -237,7 +262,7 @@ function StatCard({ label, value }) {
     );
 }
 
-function HabitCard({ habit, onDone }) {
+function HabitCard({ habit, onDone, onDelete }) {
     const completedToday =
         habit.lastCompletedDate &&
         new Date(habit.lastCompletedDate).toDateString() ===
@@ -252,17 +277,28 @@ function HabitCard({ habit, onDone }) {
                 </p>
             </div>
 
-            <button
-                onClick={() => onDone(habit._id)}
-                disabled={completedToday}
-                className={`px-4 py-2 rounded-lg font-semibold transition
-          ${completedToday
-                        ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                        : "bg-indigo-600 hover:bg-indigo-700 text-white"
-                    }`}
-            >
-                {completedToday ? "Done ✓" : "Done"}
-            </button>
+            <div className="flex gap-2">
+                <button
+                    onClick={() => onDone(habit._id)}
+                    disabled={completedToday}
+                    className={`px-4 py-2 rounded-lg font-semibold transition
+                        ${completedToday
+                            ? "bg-slate-700 text-slate-400 cursor-not-allowed"
+                            : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                        }`}
+                >
+                    {completedToday ? "Done ✓" : "Done"}
+                </button>
+
+                <button
+                    onClick={() => onDelete(habit._id)}
+                    className="px-3 py-2 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20"
+                    title="Delete habit"
+                >
+                    ✕
+                </button>
+            </div>
+
         </div>
     );
 }
