@@ -7,6 +7,8 @@ function Dashboard() {
     const [habits, setHabits] = useState([]);
     const [newHabit, setNewHabit] = useState("");
     const [adding, setAdding] = useState(false);
+    const pointsInLevel = profile.points % 100;
+    const pointsToNextLevel = 100 - pointsInLevel;
 
     useEffect(() => {
         async function fetchData() {
@@ -131,15 +133,32 @@ function Dashboard() {
                         Welcome back, {profile.username}
                     </h2>
                     <p className="text-slate-400 mt-1">
-                        One small win, every day.
+                        You’re {pointsToNextLevel} points away from leveling up.
                     </p>
                 </div>
+
+                {/* Progress Bar */}
+                <div className="bg-slate-800 rounded-xl p-4">
+                    <p className="text-sm text-slate-400 mb-2">
+                        Progress to next level
+                    </p>
+
+                    <div className="w-full h-2 bg-slate-700 rounded-full overflow-hidden">
+                        <div
+                            className="h-full bg-indigo-500 transition-all"
+                            style={{ width: `${pointsInLevel}%` }}
+                        />
+                    </div>
+                </div>
+
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     <StatCard label="Level" value={profile.level} />
                     <StatCard label="Points" value={profile.points} />
-                    <StatCard label="Streak" value="—" />
+                    <StatCard label="Next level"
+                        value={`${pointsToNextLevel} pts`}
+                    />
                 </div>
 
                 {/* Habits placeholder */}
