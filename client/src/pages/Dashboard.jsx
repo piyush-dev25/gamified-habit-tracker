@@ -7,8 +7,16 @@ function Dashboard() {
     const [habits, setHabits] = useState([]);
     const [newHabit, setNewHabit] = useState("");
     const [adding, setAdding] = useState(false);
-    const pointsInLevel = profile.points % 100;
-    const pointsToNextLevel = 100 - pointsInLevel;
+    const pointsInLevel = profile ? profile.points % 100 : 0;
+    const pointsToNextLevel = profile ? 100 - pointsInLevel : 100;
+
+    if (!token) {
+        return (
+            <div className="min-h-screen bg-slate-900 flex items-center justify-center text-slate-400">
+                Not authenticated
+            </div>
+        );
+    }
 
     useEffect(() => {
         async function fetchData() {
@@ -26,7 +34,11 @@ function Dashboard() {
                 },
             });
             const habitsData = await habitsRes.json();
-            setHabits(habitsData);
+            if (Array.isArray(habitsData)) {
+                setHabits(habitsData);
+            } else {
+                setHabits([]);
+            }
         }
 
         fetchData();
