@@ -5,6 +5,8 @@ function Dashboard() {
     const { token, logout } = useAuth();
     const [profile, setProfile] = useState(null);
     const [habits, setHabits] = useState([]);
+    const [newHabit, setNewHabit] = useState("");
+    const [adding, setAdding] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -54,6 +56,45 @@ function Dashboard() {
             points: data.user.points,
             level: data.user.level,
         }));
+    }
+
+    async function handleAddHabit() {
+        if (!newHabit.trim()) return;
+
+        setAdding(true);
+
+        try {
+            const res = await fetch("http://localhost:5000/api/habits", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ name: newHabit }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) return;
+
+            // Add new habit to UI instantly (top)
+            const newHabitFromServer = data.habit ?? data;
+
+            setHabits((prev) => [
+                {
+                    ...newHabitFromServer,
+                    lastCompletedDate: newHabitFromServer.lastCompletedDate ?? null,
+                },
+                ...prev,
+            ]);
+
+            setNewHabit("");
+
+        } finally {
+            setAdding(false);
+        }
+
+
     }
 
 
@@ -126,13 +167,31 @@ function Dashboard() {
 
                 </div>
 
-                {/* Add habit placeholder */}
-                <button
-                    disabled
-                    className="w-full py-3 rounded-xl border border-dashed border-slate-700 text-slate-400 cursor-not-allowed"
-                >
-                    + Add new habit (coming soon)
-                </button>
+                {/* Add habit */}
+                <div className="flex gap-2">
+                    <input
+                        type="text"
+                        value={newHabit}
+                        onChange={(e) => setNewHabit(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleAddHabit();
+                            }
+                        }}
+                        placeholder="New habit (e.g. Read 10 pages)"
+                        className="flex-1 rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+
+                    <button
+                        onClick={handleAddHabit}
+                        disabled={adding}
+                        className="px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-semibold disabled:opacity-50"
+                    >
+                        {adding ? "Adding…" : "Add"}
+                    </button>
+                </div>
+
             </div>
         </div>
     );
@@ -156,7 +215,7 @@ function HabitCard({ habit, onDone }) {
     return (
         <div className="bg-slate-800 rounded-xl p-4 flex items-center justify-between">
             <div>
-                <p className="font-medium">{habit.name}</p>
+                <p className="font-medium">{habit.name || "Unnamed Habit"}</p>
                 <p className="text-sm text-slate-400">
                     Streak: {habit.streak}
                 </p>
