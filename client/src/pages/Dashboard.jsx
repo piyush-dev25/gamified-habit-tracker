@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+
 
 function Dashboard() {
     const { token, logout } = useAuth();
@@ -176,12 +178,22 @@ function Dashboard() {
                     Habit<span className="text-indigo-400">Forge</span>
                 </h1>
 
-                <button
-                    onClick={logout}
-                    className="text-sm text-red-400 hover:underline"
-                >
-                    Logout
-                </button>
+                <div className="flex items-center gap-4 text-sm">
+                    <Link to="/" className="text-slate-300 hover:underline">
+                        Home
+                    </Link>
+
+                    <Link to="/about" className="text-slate-300 hover:underline">
+                        About
+                    </Link>
+
+                    <button
+                        onClick={logout}
+                        className="text-red-400 hover:underline"
+                    >
+                        Logout
+                    </button>
+                </div>
             </div>
 
             {/* Main content */}
