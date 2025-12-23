@@ -135,6 +135,30 @@ function Dashboard() {
         setHabits((prev) => prev.filter((h) => h._id !== habitId));
     }
 
+    async function handleEditHabit(habitId, newName) {
+        const res = await fetch(
+            `http://localhost:5000/api/habits/${habitId}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ name: newName }),
+            }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) return;
+
+        setHabits((prev) =>
+            prev.map((h) =>
+                h._id === habitId ? data.habit : h
+            )
+        );
+    }
+
 
     if (!profile) {
         return (
@@ -215,6 +239,7 @@ function Dashboard() {
                                     habit={habit}
                                     onDone={handleDone}
                                     onDelete={handleDeleteHabit}
+                                    onEdit={handleEditHabit}
                                 />
                             ))
 
@@ -262,7 +287,10 @@ function StatCard({ label, value }) {
     );
 }
 
-function HabitCard({ habit, onDone, onDelete }) {
+function HabitCard({ habit, onDone, onDelete, onEdit }) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedName, setEditedName] = useState(habit.name);
+
     const completedToday =
         habit.lastCompletedDate &&
         new Date(habit.lastCompletedDate).toDateString() ===
@@ -271,7 +299,27 @@ function HabitCard({ habit, onDone, onDelete }) {
     return (
         <div className="bg-slate-800 rounded-xl p-4 flex items-center justify-between">
             <div>
-                <p className="font-medium">{habit.name || "Unnamed Habit"}</p>
+                {isEditing ? (
+                    <input
+                        value={editedName}
+                        onChange={(e) => setEditedName(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                onEdit(habit._id, editedName);
+                                setIsEditing(false);
+                            }
+                            if (e.key === "Escape") {
+                                setEditedName(habit.name);
+                                setIsEditing(false);
+                            }
+                        }}
+                        className="bg-slate-700 rounded px-2 py-1 text-slate-100"
+                        autoFocus
+                    />
+                ) : (
+                    <p className="font-medium">{habit.name}</p>
+                )}
+
                 <p className="text-sm text-slate-400">
                     Streak: {habit.streak}
                 </p>
@@ -297,6 +345,15 @@ function HabitCard({ habit, onDone, onDelete }) {
                 >
                     ✕
                 </button>
+
+                <button
+                    onClick={() => setIsEditing(true)}
+                    className="px-3 py-2 rounded-lg bg-slate-600/20 text-slate-300 hover:bg-slate-600/30"
+                    title="Edit habit"
+                >
+                    ✏️
+                </button>
+
             </div>
 
         </div>

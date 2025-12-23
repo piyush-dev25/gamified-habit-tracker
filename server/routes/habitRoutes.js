@@ -117,5 +117,31 @@ router.delete("/:id", authMiddleware, async (req, res) => {
     res.json({ message: "Habit deleted" });
 });
 
+// Edit habit name
+router.patch("/:id", authMiddleware, async (req, res) => {
+    const { name } = req.body;
+
+    if (!name || !name.trim()) {
+        return res.status(400).json({ message: "Habit name is required" });
+    }
+
+    const habit = await Habit.findOne({
+        _id: req.params.id,
+        user: req.user.userId,
+    });
+
+    if (!habit) {
+        return res.status(404).json({ message: "Habit not found" });
+    }
+
+    habit.name = name;
+    await habit.save();
+
+    res.json({
+        message: "Habit updated",
+        habit,
+    });
+});
+
 
 export default router;
