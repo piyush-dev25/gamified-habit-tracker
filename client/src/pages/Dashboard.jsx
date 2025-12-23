@@ -257,6 +257,10 @@ function Dashboard() {
                         Home
                     </Link>
 
+                    <Link to="/settings" className="text-slate-300 hover:underline">
+                        Settings
+                    </Link>
+
                     <Link to="/about" className="text-slate-300 hover:underline">
                         About
                     </Link>

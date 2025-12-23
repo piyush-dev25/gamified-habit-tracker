@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import Settings from "./pages/Settings";
 
 function App() {
   const { token } = useAuth();
@@ -30,6 +31,10 @@ function App() {
         }
       />
       <Route path="/about" element={<About />} />
+      <Route
+        path="/settings"
+        element={token ? <Settings /> : <Navigate to="/" />}
+      />
 
     </Routes>
   );
