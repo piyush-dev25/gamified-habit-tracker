@@ -14,6 +14,8 @@ function Dashboard() {
     const [filter, setFilter] = useState(
         () => localStorage.getItem("habitFilter") || "all"
     );
+    const [sort, setSort] = useState("newest");
+    // newest | oldest | streak-desc | streak-asc
 
     useEffect(() => {
         localStorage.setItem("habitFilter", filter);
@@ -180,6 +182,26 @@ function Dashboard() {
         return true; // all
     });
 
+    const sortedHabits = [...filteredHabits].sort((a, b) => {
+        if (sort === "newest") {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+
+        if (sort === "oldest") {
+            return new Date(a.createdAt) - new Date(b.createdAt);
+        }
+
+        if (sort === "streak-desc") {
+            return b.streak - a.streak;
+        }
+
+        if (sort === "streak-asc") {
+            return a.streak - b.streak;
+        }
+
+        return 0;
+    });
+
 
     if (!profile) {
         return (
@@ -270,6 +292,20 @@ function Dashboard() {
                         ))}
                     </div>
 
+                    {/* Sort */}
+                    <div className="mb-4">
+                        <select
+                            value={sort}
+                            onChange={(e) => setSort(e.target.value)}
+                            className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200"
+                        >
+                            <option value="newest">Newest first</option>
+                            <option value="oldest">Oldest first</option>
+                            <option value="streak-desc">Highest streak</option>
+                            <option value="streak-asc">Lowest streak</option>
+                        </select>
+                    </div>
+
                     <h3 className="text-lg font-semibold mb-3">
                         Today’s Habits
                     </h3>
@@ -282,7 +318,7 @@ function Dashboard() {
                                     : `No ${filter} habits today.`}
                             </p>
                         ) : (
-                            filteredHabits.map((habit) => (
+                            sortedHabits.map((habit) => (
                                 <HabitCard
                                     key={habit._id}
                                     habit={habit}
