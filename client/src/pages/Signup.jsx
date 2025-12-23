@@ -9,11 +9,26 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setLoading(true);
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await fetch("http://localhost:5000/api/auth/signup", {
@@ -73,13 +88,41 @@ function Signup() {
             className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
           />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 pr-10 focus:ring-2 focus:ring-indigo-500"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((p) => !p)}
+              className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+
+          <div className="relative">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 pr-10 focus:ring-2 focus:ring-indigo-500"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((p) => !p)}
+              className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
+            >
+              {showConfirmPassword ? "Hide" : "Show"}
+            </button>
+          </div>
 
           <button
             type="submit"
