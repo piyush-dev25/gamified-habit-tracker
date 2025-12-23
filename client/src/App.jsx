@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import { useAuth } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import Signup from "./pages/Signup";
+import Home from "./pages/Home";
 
 function App() {
   const { token } = useAuth();
@@ -12,7 +13,7 @@ function App() {
       <Route
         path="/"
         element={
-          token ? <Navigate to="/dashboard" /> : <Login />
+          token ? <Navigate to="/dashboard" /> : <Home />
         }
       />
       <Route
