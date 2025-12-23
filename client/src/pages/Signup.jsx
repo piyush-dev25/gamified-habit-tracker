@@ -12,6 +12,9 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const passwordTooShort = password.length > 0 && password.length < 6;
+  const passwordsMismatch =
+    confirmPassword.length > 0 && password !== confirmPassword;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -123,6 +126,21 @@ function Signup() {
               {showConfirmPassword ? "Hide" : "Show"}
             </button>
           </div>
+
+          <div className="text-sm space-y-1">
+            {passwordTooShort && (
+              <p className="text-yellow-400">
+                • Password should be at least 6 characters
+              </p>
+            )}
+
+            {passwordsMismatch && (
+              <p className="text-red-400">
+                • Passwords do not match
+              </p>
+            )}
+          </div>
+
 
           <button
             type="submit"
