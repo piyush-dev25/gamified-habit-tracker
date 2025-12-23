@@ -16,6 +16,8 @@ function Dashboard() {
     );
     const [sort, setSort] = useState("newest");
     // newest | oldest | streak-desc | streak-asc
+    const [feedback, setFeedback] = useState("");
+
 
     useEffect(() => {
         localStorage.setItem("habitFilter", filter);
@@ -83,6 +85,10 @@ function Dashboard() {
             points: data.user.points,
             level: data.user.level,
         }));
+
+        setFeedback("+10 points added!");
+        setTimeout(() => setFeedback(""), 2000);
+
     }
 
     async function handleUndo(habitId) {
@@ -277,6 +283,13 @@ function Dashboard() {
                     </p>
                 </div>
 
+                {feedback && (
+                    <div className="text-sm text-green-400 font-medium">
+                        {feedback}
+                    </div>
+                )}
+
+
                 {/* Progress Bar */}
                 <div className="bg-slate-800 rounded-xl p-4">
                     <p className="text-sm text-slate-400 mb-2">
@@ -409,6 +422,21 @@ function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
         new Date(habit.lastCompletedDate).toDateString() ===
         new Date().toDateString();
 
+    let lastCompletedText = "Not completed yet";
+
+    if (habit.lastCompletedDate) {
+        const lastDate = new Date(habit.lastCompletedDate);
+        const diffDays = Math.floor(
+            (new Date().setHours(0, 0, 0, 0) -
+                lastDate.setHours(0, 0, 0, 0)) /
+            (1000 * 60 * 60 * 24)
+        );
+
+        if (diffDays === 0) lastCompletedText = "Completed today";
+        else if (diffDays === 1) lastCompletedText = "Completed yesterday";
+        else lastCompletedText = `Completed ${diffDays} days ago`;
+    }
+
     return (
         <div className="bg-slate-800 rounded-xl p-4 flex items-center justify-between">
             <div>
@@ -434,12 +462,12 @@ function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
                 )}
 
                 <p className="text-sm text-slate-400">
-                    Streak: {habit.streak}
+                    Streak: {habit.streak} • {lastCompletedText}
                 </p>
             </div>
 
             <div className="flex gap-2">
-                    {completedToday ? (
+                {completedToday ? (
                     <button
                         onClick={() => onUndo(habit._id)}
                         className="px-4 py-2 rounded-lg font-semibold bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30"
