@@ -11,6 +11,15 @@ function Dashboard() {
     const [adding, setAdding] = useState(false);
     const pointsInLevel = profile ? profile.points % 100 : 0;
     const pointsToNextLevel = profile ? 100 - pointsInLevel : 100;
+    const [filter, setFilter] = useState(
+        () => localStorage.getItem("habitFilter") || "all"
+    );
+
+    useEffect(() => {
+        localStorage.setItem("habitFilter", filter);
+    }, [filter]);
+    // all | done | undone
+    const todayString = new Date().toDateString();
 
     if (!token) {
         return (
@@ -161,6 +170,16 @@ function Dashboard() {
         );
     }
 
+    const filteredHabits = habits.filter((habit) => {
+        const completedToday =
+            habit.lastCompletedDate &&
+            new Date(habit.lastCompletedDate).toDateString() === todayString;
+
+        if (filter === "done") return completedToday;
+        if (filter === "undone") return !completedToday;
+        return true; // all
+    });
+
 
     if (!profile) {
         return (
@@ -235,17 +254,35 @@ function Dashboard() {
 
                 {/* Habits placeholder */}
                 <div>
+                    <div className="flex gap-2 mb-4">
+                        {["all", "done", "undone"].map((type) => (
+                            <button
+                                key={type}
+                                onClick={() => setFilter(type)}
+                                className={`px-3 py-1 rounded-lg text-sm font-medium transition
+                ${filter === type
+                                        ? "bg-indigo-600 text-white"
+                                        : "bg-slate-800 text-slate-300 hover:bg-slate-700"
+                                    }`}
+                            >
+                                {type.charAt(0).toUpperCase() + type.slice(1)}
+                            </button>
+                        ))}
+                    </div>
+
                     <h3 className="text-lg font-semibold mb-3">
                         Today’s Habits
                     </h3>
 
                     <div className="space-y-3">
-                        {habits.length === 0 ? (
+                        {filteredHabits.length === 0 ? (
                             <p className="text-slate-400 text-sm">
-                                No habits yet. Add your first one to get started.
+                                {filter === "all"
+                                    ? "No habits yet. Add your first one to get started."
+                                    : `No ${filter} habits today.`}
                             </p>
                         ) : (
-                            habits.map((habit) => (
+                            filteredHabits.map((habit) => (
                                 <HabitCard
                                     key={habit._id}
                                     habit={habit}
@@ -254,8 +291,8 @@ function Dashboard() {
                                     onEdit={handleEditHabit}
                                 />
                             ))
-
                         )}
+
                     </div>
 
                 </div>
