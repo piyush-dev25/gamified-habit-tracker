@@ -85,6 +85,33 @@ function Dashboard() {
         }));
     }
 
+    async function handleUndo(habitId) {
+        const res = await fetch(
+            `http://localhost:5000/api/habits/${habitId}/undo`,
+            {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        const data = await res.json();
+        if (!res.ok) return;
+
+        // Update habit
+        setHabits((prev) =>
+            prev.map((h) => (h._id === habitId ? data.habit : h))
+        );
+
+        // Update profile
+        setProfile((prev) => ({
+            ...prev,
+            points: data.user.points,
+            level: data.user.level,
+        }));
+    }
+
     async function handleAddHabit() {
         if (!newHabit.trim()) return;
 
@@ -323,6 +350,7 @@ function Dashboard() {
                                     key={habit._id}
                                     habit={habit}
                                     onDone={handleDone}
+                                    onUndo={handleUndo}
                                     onDelete={handleDeleteHabit}
                                     onEdit={handleEditHabit}
                                 />
@@ -372,7 +400,7 @@ function StatCard({ label, value }) {
     );
 }
 
-function HabitCard({ habit, onDone, onDelete, onEdit }) {
+function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState(habit.name);
 
@@ -411,17 +439,22 @@ function HabitCard({ habit, onDone, onDelete, onEdit }) {
             </div>
 
             <div className="flex gap-2">
-                <button
-                    onClick={() => onDone(habit._id)}
-                    disabled={completedToday}
-                    className={`px-4 py-2 rounded-lg font-semibold transition
-                        ${completedToday
-                            ? "bg-slate-700 text-slate-400 cursor-not-allowed"
-                            : "bg-indigo-600 hover:bg-indigo-700 text-white"
-                        }`}
-                >
-                    {completedToday ? "Done ✓" : "Done"}
-                </button>
+                    {completedToday ? (
+                    <button
+                        onClick={() => onUndo(habit._id)}
+                        className="px-4 py-2 rounded-lg font-semibold bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30"
+                    >
+                        Undo
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => onDone(habit._id)}
+                        className="px-4 py-2 rounded-lg font-semibold bg-indigo-600 hover:bg-indigo-700 text-white"
+                    >
+                        Done
+                    </button>
+                )}
+
 
                 <button
                     onClick={() => onDelete(habit._id)}

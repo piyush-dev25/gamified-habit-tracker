@@ -101,6 +101,45 @@ router.patch("/:id/done", authMiddleware, async (req, res) => {
 
 });
 
+// Undo habit completion for today
+router.patch("/:id/undo", authMiddleware, async (req, res) => {
+    const habit = await Habit.findOne({
+        _id: req.params.id,
+        user: req.user.userId,
+    });
+
+    if (!habit || !habit.lastCompletedDate) {
+        return res.status(400).json({ message: "Habit not completed today" });
+    }
+
+    const today = new Date().toDateString();
+    const lastCompleted = habit.lastCompletedDate.toDateString();
+
+    if (lastCompleted !== today) {
+        return res.status(400).json({ message: "Undo only allowed for today" });
+    }
+
+    // Revert streak
+    habit.streak = Math.max(habit.streak - 1, 0);
+    habit.lastCompletedDate = null;
+    await habit.save();
+
+    // Revert user points
+    const user = await User.findById(req.user.userId);
+    user.points = Math.max(user.points - 10, 0);
+    user.level = Math.floor(user.points / 100) + 1;
+    await user.save();
+
+    res.json({
+        message: "Habit undone",
+        habit,
+        user: {
+            points: user.points,
+            level: user.level,
+        },
+    });
+});
+
 // Delete habit
 router.delete("/:id", authMiddleware, async (req, res) => {
     const habit = await Habit.findOne({
