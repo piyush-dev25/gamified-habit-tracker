@@ -90,16 +90,109 @@ function Settings() {
 
           {/* Update password */}
           <div className="bg-slate-800 rounded-xl p-6 space-y-4">
-            <h2 className="text-xl font-semibold">Update password</h2>
+                    <h2 className="text-xl font-semibold">Update password</h2>
 
-            {error && <p className="text-red-400 text-sm">{error}</p>}
-            {message && <p className="text-green-400 text-sm">{message}</p>}
+                    {error && <p className="text-red-400 text-sm">{error}</p>}
+                    {message && <p className="text-green-400 text-sm">{message}</p>}
 
-            {/* inputs + buttons unchanged */}
-            {/* (exact same code as before, untouched) */}
+                    <div className="relative">
+                        <input
+                            type={showOld ? "text" : "password"}
+                            placeholder="Old password"
+                            value={oldPassword}
+                            onChange={(e) => setOldPassword(e.target.value)}
+                            className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 pr-10"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowOld((v) => !v)}
+                            className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
+                        >
+                            {showOld ? "Hide" : "Show"}
+                        </button>
+                    </div>
 
-            {/* ... your existing password code stays here ... */}
-          </div>
+
+                    <div className="relative">
+                        <input
+                            type={showNew ? "text" : "password"}
+                            placeholder="New password"
+                            value={newPassword}
+                            onChange={(e) => setNewPassword(e.target.value)}
+                            className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 pr-10"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowNew((v) => !v)}
+                            className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
+                        >
+                            {showNew ? "Hide" : "Show"}
+                        </button>
+                    </div>
+
+
+                    <div className="relative">
+                        <input
+                            type={showConfirm ? "text" : "password"}
+                            placeholder="Confirm new password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 pr-10"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirm((v) => !v)}
+                            className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
+                        >
+                            {showConfirm ? "Hide" : "Show"}
+                        </button>
+                    </div>
+
+
+                    <button
+                        onClick={async () => {
+                            setError("");
+                            setMessage("");
+
+                            if (oldPassword === newPassword) {
+                                setError("New password must be different from old password");
+                                return;
+                            }
+
+                            if (newPassword !== confirmPassword) {
+                                setError("Passwords do not match");
+                                return;
+                            }
+
+                            const res = await fetch("http://localhost:5000/api/users/password", {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`,
+                                },
+                                body: JSON.stringify({
+                                    oldPassword,
+                                    newPassword,
+                                }),
+                            });
+
+                            const data = await res.json();
+
+                            if (!res.ok) {
+                                setError(data.message || "Failed to update password");
+                                return;
+                            }
+
+                            setMessage("Password updated successfully");
+                            setOldPassword("");
+                            setNewPassword("");
+                            setConfirmPassword("");
+                        }}
+                        className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-lg font-medium text-sm"
+                    >
+                        Update password
+                    </button>
+                </div>
 
           {/* Danger zone */}
           <div className="bg-slate-800 rounded-xl p-6 space-y-4 border border-red-500/30">

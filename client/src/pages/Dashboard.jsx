@@ -432,6 +432,14 @@ function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
         else lastCompletedText = `Completed ${diffDays} days ago`;
     }
 
+    function saveEdit() {
+        if (!editedName.trim()) return;
+
+        onEdit(habit._id, editedName);
+        setIsEditing(false);
+    }
+
+
     return (
         <div className="bg-slate-800 rounded-xl p-4 flex items-center justify-between">
             <div>
@@ -441,14 +449,14 @@ function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
                         onChange={(e) => setEditedName(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                                onEdit(habit._id, editedName);
-                                setIsEditing(false);
+                                saveEdit();
                             }
                             if (e.key === "Escape") {
                                 setEditedName(habit.name);
                                 setIsEditing(false);
                             }
                         }}
+
                         className="bg-slate-700 rounded px-2 py-1 text-slate-100"
                         autoFocus
                     />
@@ -488,12 +496,19 @@ function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
                 </button>
 
                 <button
-                    onClick={() => setIsEditing(true)}
+                    onClick={() => {
+                        if (isEditing) {
+                            saveEdit();        // ✅ clicked → save
+                        } else {
+                            setIsEditing(true); // ✏️ clicked → edit mode
+                        }
+                    }}
                     className="px-3 py-2 rounded-lg bg-slate-600/20 text-slate-300 hover:bg-slate-600/30"
-                    title="Edit habit"
+                    title={isEditing ? "Save habit" : "Edit habit"}
                 >
-                    ✏️
+                    {isEditing ? "✅" : "✏️"}
                 </button>
+
 
             </div>
 

@@ -27,12 +27,6 @@ function Home() {
             Sign up
           </Link>
 
-          <Link
-            to="/about"
-            className="px-6 py-3 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800"
-          >
-            About
-          </Link>
         </div>
       </div>
     </div>
