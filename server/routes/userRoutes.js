@@ -2,6 +2,7 @@ import express from "express";
 import authMiddleware from "../middleware/authMiddleware.js";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
+import Habit from "../models/Habit.js";
 
 const router = express.Router();
 
@@ -51,6 +52,19 @@ router.patch("/password", authMiddleware, async (req, res) => {
   await user.save();
 
   res.json({ message: "Password updated successfully" });
+});
+
+// Delete account
+router.delete("/", authMiddleware, async (req, res) => {
+  const userId = req.user.userId;
+
+  // Delete all habits first
+  await Habit.deleteMany({ user: userId });
+
+  // Delete user
+  await User.findByIdAndDelete(userId);
+
+  res.json({ message: "Account deleted successfully" });
 });
 
 export default router;

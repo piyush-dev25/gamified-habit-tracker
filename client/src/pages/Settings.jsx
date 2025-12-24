@@ -12,6 +12,8 @@ function Settings() {
     const [showOld, setShowOld] = useState(false);
     const [showNew, setShowNew] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const [deleteConfirm, setDeleteConfirm] = useState("");
+
     useEffect(() => {
         async function fetchProfile() {
             const res = await fetch("http://localhost:5000/api/users/me", {
@@ -171,12 +173,41 @@ function Settings() {
 
 
                 {/* Danger zone placeholder */}
-                <div className="bg-slate-800 rounded-xl p-6 space-y-2 opacity-70">
+                <div className="bg-slate-800 rounded-xl p-6 space-y-4 border border-red-500/30">
                     <h2 className="text-xl font-semibold text-red-400">Danger zone</h2>
-                    <p className="text-slate-400 text-sm">
-                        Account deletion coming soon.
+
+                    <p className="text-sm text-slate-400">
+                        Deleting your account is permanent. All your habits and progress will be lost.
                     </p>
+
+                    <input
+                        type="text"
+                        placeholder='Type "DELETE" to confirm'
+                        value={deleteConfirm}
+                        onChange={(e) => setDeleteConfirm(e.target.value)}
+                        className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2"
+                    />
+
+                    <button
+                        disabled={deleteConfirm !== "DELETE"}
+                        onClick={async () => {
+                            const res = await fetch("http://localhost:5000/api/users", {
+                                method: "DELETE",
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            });
+
+                            if (!res.ok) return;
+                            setDeleteConfirm("");
+                            logout();
+                        }}
+                        className="bg-red-600 hover:bg-red-700 px-4 py-2.5 rounded-lg font-medium text-sm"
+                    >
+                        Delete account
+                    </button>
                 </div>
+
 
                 {/* Logout */}
                 <button
