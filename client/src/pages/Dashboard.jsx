@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Avatar from "../components/Avatar";
+import SideNav from "../components/SideNav";
 
 
 function Dashboard() {
@@ -18,6 +19,7 @@ function Dashboard() {
     const [sort, setSort] = useState("newest");
     // newest | oldest | streak-desc | streak-asc
     const [feedback, setFeedback] = useState("");
+    const [navOpen, setNavOpen] = useState(false);
 
 
     useEffect(() => {
@@ -246,37 +248,25 @@ function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-900 text-slate-100">
+        <div className="h-screen flex bg-slate-900 text-slate-100 overflow-hidden">
             {/* Top bar */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-                <h1 className="text-xl font-bold">
-                    Habit<span className="text-indigo-400">Forge</span>
-                </h1>
-
-                <div className="flex items-center gap-4 text-sm">
-                    <Link to="/" className="text-slate-300 hover:underline">
-                        Home
-                    </Link>
-
-                    <Link to="/about" className="text-slate-300 hover:underline">
-                        About
-                    </Link>
-
-                    <Link to="/settings">
-                        <Avatar name={profile.username} size={36} />
-                    </Link>
-
-                    <button
-                        onClick={logout}
-                        className="text-red-400 hover:underline"
-                    >
-                        Logout
-                    </button>
-                </div>
-            </div>
+            <SideNav username={profile.username}
+                open={navOpen}
+                onClose={() => setNavOpen(false)} />
 
             {/* Main content */}
-            <div className="p-6 space-y-8">
+            <div className="flex-1 p-6 space-y-8 overflow-y-auto">
+
+                {/* Mobile menu button */}
+                <div className="md:hidden mb-4">
+                    <button
+                        onClick={() => setNavOpen(true)}
+                        className="text-slate-300 text-2xl"
+                    >
+                        ☰
+                    </button>
+                </div>
+
 
                 {/* Greeting */}
                 <div>
