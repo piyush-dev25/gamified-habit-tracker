@@ -309,6 +309,31 @@ function Dashboard() {
                     />
                 </div>
 
+                {/* Add habit */}
+                <div className="flex gap-2">
+                    <input
+                        type="text"
+                        value={newHabit}
+                        onChange={(e) => setNewHabit(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleAddHabit();
+                            }
+                        }}
+                        placeholder="New habit (e.g. Read 10 pages)"
+                        className="flex-1 rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    />
+
+                    <button
+                        onClick={handleAddHabit}
+                        disabled={adding}
+                        className="px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-semibold disabled:opacity-50"
+                    >
+                        {adding ? "Adding…" : "Add"}
+                    </button>
+                </div>
+
                 {/* Habits placeholder */}
                 <div>
                     <div className="flex gap-2 mb-4">
@@ -367,31 +392,6 @@ function Dashboard() {
 
                     </div>
 
-                </div>
-
-                {/* Add habit */}
-                <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={newHabit}
-                        onChange={(e) => setNewHabit(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                e.preventDefault();
-                                handleAddHabit();
-                            }
-                        }}
-                        placeholder="New habit (e.g. Read 10 pages)"
-                        className="flex-1 rounded-xl bg-slate-800 border border-slate-700 px-4 py-3 text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-
-                    <button
-                        onClick={handleAddHabit}
-                        disabled={adding}
-                        className="px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-semibold disabled:opacity-50"
-                    >
-                        {adding ? "Adding…" : "Add"}
-                    </button>
                 </div>
 
             </div>
