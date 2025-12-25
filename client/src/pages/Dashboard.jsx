@@ -5,6 +5,9 @@ import Avatar from "../components/Avatar";
 import SideNav from "../components/SideNav";
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineDone } from "react-icons/md";
+import { API_BASE } from "../api/api";
+
+
 
 function Dashboard() {
     const { token, logout } = useAuth();
@@ -39,7 +42,7 @@ function Dashboard() {
 
     useEffect(() => {
         async function fetchData() {
-            const profileRes = await fetch("http://localhost:5000/api/users/me", {
+            const profileRes = await fetch(`${API_BASE}/api/users/me`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -47,7 +50,7 @@ function Dashboard() {
             const profileData = await profileRes.json();
             setProfile(profileData);
 
-            const habitsRes = await fetch("http://localhost:5000/api/habits", {
+            const habitsRes = await fetch(`${API_BASE}/api/habits`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -65,7 +68,7 @@ function Dashboard() {
 
     async function handleDone(habitId) {
         const res = await fetch(
-            `http://localhost:5000/api/habits/${habitId}/done`,
+            `${API_BASE}/api/habits/${habitId}/done`,
             {
                 method: "PATCH",
                 headers: {
@@ -97,7 +100,7 @@ function Dashboard() {
 
     async function handleUndo(habitId) {
         const res = await fetch(
-            `http://localhost:5000/api/habits/${habitId}/undo`,
+            `${API_BASE}/api/habits/${habitId}/undo`,
             {
                 method: "PATCH",
                 headers: {
@@ -128,7 +131,7 @@ function Dashboard() {
         setAdding(true);
 
         try {
-            const res = await fetch("http://localhost:5000/api/habits", {
+            const res = await fetch(`${API_BASE}/api/habits`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -169,7 +172,7 @@ function Dashboard() {
         if (!confirmed) return;
 
         const res = await fetch(
-            `http://localhost:5000/api/habits/${habitId}`,
+            `${API_BASE}/api/habits/${habitId}`,
             {
                 method: "DELETE",
                 headers: {
@@ -187,7 +190,7 @@ function Dashboard() {
 
     async function handleEditHabit(habitId, newName) {
         const res = await fetch(
-            `http://localhost:5000/api/habits/${habitId}`,
+            `${API_BASE}/api/habits/${habitId}`,
             {
                 method: "PATCH",
                 headers: {

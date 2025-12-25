@@ -3,6 +3,7 @@ import SideNav from "../components/SideNav";
 import { useAuth } from "../context/AuthContext";
 import { FaGithub } from "react-icons/fa";
 import { MdOutlineEmail } from "react-icons/md";
+import { API_BASE } from "../api/api";
 
 function About() {
   const { token } = useAuth();               // ✅ only token
@@ -12,7 +13,7 @@ function About() {
   // ✅ fetch profile (same pattern as Settings)
   useEffect(() => {
     async function fetchProfile() {
-      const res = await fetch("http://localhost:5000/api/users/me", {
+      const res = await fetch(`${API_BASE}/api/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import SideNav from "../components/SideNav";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import { API_BASE } from "../api/api";
 
 function Settings() {
   const { token, logout, user } = useAuth();
@@ -21,7 +22,7 @@ function Settings() {
 
   useEffect(() => {
     async function fetchProfile() {
-      const res = await fetch("http://localhost:5000/api/users/me", {
+      const res = await fetch(`${API_BASE}/api/users/me`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -166,7 +167,7 @@ function Settings() {
                                 return;
                             }
 
-                            const res = await fetch("http://localhost:5000/api/users/password", {
+                            const res = await fetch(`${API_BASE}/api/users/password`, {
                                 method: "PATCH",
                                 headers: {
                                     "Content-Type": "application/json",
@@ -215,7 +216,7 @@ function Settings() {
             <button
               disabled={deleteConfirm !== "DELETE"}
               onClick={async () => {
-                const res = await fetch("http://localhost:5000/api/users", {
+                const res = await fetch(`${API_BASE}/api/users`, {
                   method: "DELETE",
                   headers: {
                     Authorization: `Bearer ${token}`,
