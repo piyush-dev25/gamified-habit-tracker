@@ -5,7 +5,7 @@ function Home() {
     <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-100">
       <div className="max-w-xl text-center px-6">
         <h1 className="text-4xl font-bold mb-4">
-          Habit<span className="text-indigo-400">Forge</span>
+          Habi<span className="text-indigo-400">tual</span>
         </h1>
 
         <p className="text-slate-400 mb-8">

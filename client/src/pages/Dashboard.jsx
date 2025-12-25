@@ -3,7 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Avatar from "../components/Avatar";
 import SideNav from "../components/SideNav";
-
+import { FaEdit } from "react-icons/fa";
+import { MdOutlineDone } from "react-icons/md";
 
 function Dashboard() {
     const { token, logout } = useAuth();
@@ -506,7 +507,7 @@ function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
                     className="px-3 py-2 rounded-lg bg-slate-600/20 text-slate-300 hover:bg-slate-600/30"
                     title={isEditing ? "Save habit" : "Edit habit"}
                 >
-                    {isEditing ? "✅" : "✏️"}
+                    {isEditing ? <MdOutlineDone className="text-2xl"/> : <FaEdit className="text-2xl"/>}
                 </button>
 
 

@@ -1,6 +1,8 @@
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import SideNav from "../components/SideNav";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 function Settings() {
   const { token, logout, user } = useAuth();
@@ -108,7 +110,7 @@ function Settings() {
                             onClick={() => setShowOld((v) => !v)}
                             className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
                         >
-                            {showOld ? "Hide" : "Show"}
+                            {showOld ? <FaEyeSlash className="text-2xl"/> : <FaEye className="text-2xl"/>}
                         </button>
                     </div>
 
@@ -126,7 +128,7 @@ function Settings() {
                             onClick={() => setShowNew((v) => !v)}
                             className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
                         >
-                            {showNew ? "Hide" : "Show"}
+                            {showNew ? <FaEyeSlash className="text-2xl"/> : <FaEye className="text-2xl"/>}
                         </button>
                     </div>
 
@@ -144,7 +146,7 @@ function Settings() {
                             onClick={() => setShowConfirm((v) => !v)}
                             className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
                         >
-                            {showConfirm ? "Hide" : "Show"}
+                            {showConfirm ? <FaEyeSlash className="text-2xl" /> : <FaEye className="text-2xl"/>}
                         </button>
                     </div>
 

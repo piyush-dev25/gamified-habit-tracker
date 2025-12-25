@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -44,7 +46,7 @@ function Login() {
 
         {/* App name */}
         <h1 className="text-4xl font-bold text-center">
-          Habit<span className="text-indigo-400">Forge</span>
+          Habi<span className="text-indigo-400">tual</span>
         </h1>
 
         {/* Quote */}
@@ -100,7 +102,7 @@ function Login() {
                 className="absolute right-4 top-1/2 -translate-y-1/2 
                          text-slate-400 hover:text-slate-200 text-lg"
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ?<FaEyeSlash className="text-2xl" />: <FaEye className="text-2xl"/>}
               </button>
             </div>
           </div>

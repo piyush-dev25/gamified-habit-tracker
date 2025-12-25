@@ -1,49 +1,74 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 
 function Signup() {
-  const { login } = useAuth();
-
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const passwordTooShort = password.length > 0 && password.length < 6;
   const passwordsMismatch =
     confirmPassword.length > 0 && password !== confirmPassword;
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+  function validateForm() {
+    if (!username.trim()) {
+      return "You didn’t enter a username";
+    }
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
+    if (!email.trim()) {
+      return "You didn’t enter an email";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Please enter a valid email address";
+    }
+
+    if (!password) {
+      return "You didn’t enter a password";
+    }
+
+    if (!confirmPassword) {
+      return "You didn’t confirm your password";
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      setLoading(false);
+      return "Password must be at least 6 characters";
+    }
+
+    if (password !== confirmPassword) {
+      return "Passwords do not match";
+    }
+
+    return null; // ✅ all good
+  }
+
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    if (loading) return;
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
+
+    setError("");
+    setLoading(true);
 
     try {
       const res = await fetch("http://localhost:5000/api/auth/signup", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await res.json();
@@ -51,7 +76,6 @@ function Signup() {
       if (!res.ok) {
         setError(data.message || "Signup failed");
       } else {
-        // auto-login after signup
         window.location.href = "/";
       }
     } catch {
@@ -63,77 +87,130 @@ function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-100">
-      <div className="w-full max-w-md bg-slate-800 rounded-2xl shadow-xl p-8">
-        <h1 className="text-3xl font-bold text-center">
-          Create account
+      <div className="w-full max-w-lg bg-slate-800 rounded-2xl shadow-xl p-10">
+
+        {/* App name */}
+        <h1 className="text-4xl font-bold text-center">
+          Habi<span className="text-indigo-400">tual</span>
         </h1>
 
+        {/* Subtitle */}
+        <p className="text-slate-400 text-center mt-3 text-base">
+          Create your account to begin.
+        </p>
+
+        {/* Error */}
         {error && (
-          <p className="mt-4 text-sm text-red-400 text-center">
+          <p className="mt-5 text-sm text-red-400 text-center">
             {error}
           </p>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
-          />
+        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
-          />
-
-          <div className="relative">
+          {/* Username */}
+          <div>
+            <label className="block text-base font-medium text-slate-200 mb-2.5">
+              Username
+            </label>
             <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 pr-10 focus:ring-2 focus:ring-indigo-500"
+              type="text"
+              value={username}
+              onChange={(e) => {setUsername(e.target.value);
+                 setError("");}
+              }
+              placeholder="Full Name"
+              className="w-full rounded-lg bg-slate-900 border border-slate-700 
+                         px-4 py-3 text-base
+                         focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-
-            <button
-              type="button"
-              onClick={() => setShowPassword((p) => !p)}
-              className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
-            >
-              {showPassword ? "Hide" : "Show"}
-            </button>
           </div>
 
-          <div className="relative">
+          {/* Email */}
+          <div>
+            <label className="block text-base font-medium text-slate-200 mb-2.5">
+              Email
+            </label>
             <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 pr-10 focus:ring-2 focus:ring-indigo-500"
+              type="email"
+              value={email}
+              onChange={(e) => {setEmail(e.target.value);
+                 setError("");}
+              }
+              placeholder="you@example.com"
+              className="w-full rounded-lg bg-slate-900 border border-slate-700 
+                         px-4 py-3 text-base
+                         focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
-
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((p) => !p)}
-              className="absolute right-3 top-2 text-sm text-slate-400 hover:text-slate-200"
-            >
-              {showConfirmPassword ? "Hide" : "Show"}
-            </button>
           </div>
 
+          {/* Password */}
+          <div>
+            <label className="block text-base font-medium text-slate-200 mb-2.5">
+              Password
+            </label>
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) =>{ setPassword(e.target.value);
+                   setError("");}
+                }
+                placeholder="••••••••"
+                className="w-full rounded-lg bg-slate-900 border border-slate-700 
+                         px-4 py-3 pr-12 text-base
+                         focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="button"
+                onClick={() => {setShowPassword(!showPassword);
+                   setError("");}
+                }
+                className="absolute right-4 top-1/2 -translate-y-1/2 
+                         text-slate-400 hover:text-slate-200 text-lg"
+              >
+                {showPassword ? <FaEyeSlash className="text-2xl"/> : <FaEye className="text-2xl"/>}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm password */}
+          <div>
+            <label className="block text-base font-medium text-slate-200 mb-2.5">
+              Confirm password
+            </label>
+
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => {setConfirmPassword(e.target.value);
+                   setError("");}
+                }
+                placeholder="••••••••"
+                className="w-full rounded-lg bg-slate-900 border border-slate-700 
+                         px-4 py-3 pr-12 text-base
+                         focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 
+                         text-slate-400 hover:text-slate-200 text-lg"
+              >
+                {showConfirmPassword ? <FaEyeSlash className="text-2xl"/> : <FaEye className="text-2xl"/>}
+              </button>
+            </div>
+          </div>
+
+          {/* Hints */}
           <div className="text-sm space-y-1">
             {passwordTooShort && (
               <p className="text-yellow-400">
-                • Password should be at least 6 characters
+                • Password must be at least 6 characters
               </p>
             )}
-
             {passwordsMismatch && (
               <p className="text-red-400">
                 • Passwords do not match
@@ -141,22 +218,22 @@ function Signup() {
             )}
           </div>
 
-
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full mt-3 py-3 rounded-lg font-semibold text-lg text-white
+                     bg-linear-to-r from-indigo-500 to-violet-500
+                     hover:opacity-90 transition disabled:opacity-50"
           >
-            {loading ? "Creating..." : "Sign up"}
+            {loading ? "Creating account..." : "Sign up"}
           </button>
         </form>
+
         {/* Login link */}
-        <p className="text-2sm text-slate-400 text-center mt-7">
+        <p className="text-sm text-slate-400 text-center mt-7">
           Already have an account?{" "}
-          <a
-            href="/login"
-            className="text-indigo-400 hover:underline"
-          >
+          <a href="/login" className="text-indigo-400 hover:underline">
             Log in
           </a>
         </p>

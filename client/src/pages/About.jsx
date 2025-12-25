@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import SideNav from "../components/SideNav";
 import { useAuth } from "../context/AuthContext";
+import { FaGithub } from "react-icons/fa";
+import { MdOutlineEmail } from "react-icons/md";
 
 function About() {
   const { token } = useAuth();               // ✅ only token
@@ -60,13 +62,13 @@ function About() {
 
             {/* Title */}
             <h1 className="text-3xl font-bold">
-              About Habit<span className="text-indigo-400">Forge</span>
+              About Habi<span className="text-indigo-400">tual</span>
             </h1>
 
             {/* What the app is */}
             <div className="space-y-4 text-slate-400 leading-relaxed">
               <p>
-                HabitForge is a simple, gamified habit tracker built to help you
+                Habitual is a simple, gamified habit tracker built to help you
                 stay consistent without feeling overwhelmed. The goal isn’t
                 perfection — it’s showing up, one small win at a time.
               </p>
@@ -89,7 +91,7 @@ function About() {
               </p>
 
               <p>
-                I built HabitForge during a phase where I felt stuck and
+                I built Habitual during a phase where I felt stuck and
                 unmotivated. Instead of waiting to feel disciplined, I decided
                 to build something that could help me take small, consistent
                 steps forward.
@@ -118,14 +120,14 @@ function About() {
             <div className="pt-6 border-t border-slate-800 space-y-3">
               <h2 className="text-xl font-semibold">Connect</h2>
 
-              <div className="flex flex-col gap-2 text-slate-400">
+              <div className="flex gap-2 text-slate-400">
                 <a
                   href="https://github.com/piyush-dev25"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline"
                 >
-                  GitHub
+                  {<FaGithub className="text-3xl"/>}
                 </a>
 
                 <a
@@ -134,7 +136,7 @@ function About() {
                   rel="noopener noreferrer"
                   className="hover:underline"
                 >
-                  Email
+                  {<MdOutlineEmail className="text-3xl"/>}
                 </a>
               </div>
             </div>
