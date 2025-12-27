@@ -17,7 +17,7 @@ function SideNav({ username, open, onClose }) {
 
       {/* 🔴 CHANGE 2: Replace outer div with <aside> + sliding logic */}
       <aside
-  className={`
+        className={`
     fixed md:static z-50
     w-64 h-dvh
     bg-slate-900 border-r border-slate-800
@@ -27,7 +27,7 @@ function SideNav({ username, open, onClose }) {
     ${open ? "translate-x-0" : "-translate-x-full"}
     md:translate-x-0
   `}
->
+      >
 
         {/* 🔴 CHANGE 3: Make header flex + add close button */}
         <div className="px-6 py-5 border-b border-slate-800 flex justify-between items-center">
