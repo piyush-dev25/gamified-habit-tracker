@@ -259,17 +259,23 @@ function Dashboard() {
                 onClose={() => setNavOpen(false)} />
 
             {/* Main content */}
-            <div className="flex-1 p-6 space-y-8 overflow-y-auto">
+            <div className="flex-1 p-6 space-y-8 overflow-y-auto pt-16 md:pt-0">
 
                 {/* Mobile menu button */}
-                <div className="md:hidden mb-4">
-                    <button
-                        onClick={() => setNavOpen(true)}
-                        className="text-slate-300 text-2xl"
-                    >
-                        ☰
-                    </button>
-                </div>
+                <button
+                    onClick={() => setNavOpen(true)}
+                    className="
+                    fixed top-4 left-4 z-50
+                    md:hidden
+                    text-slate-300 text-2xl
+                    p-2 rounded-lg
+                    bg-slate-900/90 backdrop-blur
+                    shadow-lg
+                "
+                >
+                    ☰
+                </button>
+
 
 
                 {/* Greeting */}
@@ -510,7 +516,7 @@ function HabitCard({ habit, onDone, onUndo, onDelete, onEdit }) {
                     className="px-3 py-2 rounded-lg bg-slate-600/20 text-slate-300 hover:bg-slate-600/30"
                     title={isEditing ? "Save habit" : "Edit habit"}
                 >
-                    {isEditing ? <MdOutlineDone className="text-2xl"/> : <FaEdit className="text-2xl"/>}
+                    {isEditing ? <MdOutlineDone className="text-2xl" /> : <FaEdit className="text-2xl" />}
                 </button>
 
 

@@ -46,18 +46,24 @@ function About() {
       />
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto pt-16 md:pt-0">
         <div className="p-6 space-y-8">
 
-          {/* Mobile menu */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setNavOpen(true)}
-              className="text-slate-300 text-2xl"
-            >
-              ☰
-            </button>
-          </div>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setNavOpen(true)}
+            className="
+              fixed top-4 left-4 z-50
+              md:hidden
+              text-slate-300 text-2xl
+              p-2 rounded-lg
+              bg-slate-900/90 backdrop-blur
+              shadow-lg
+            "
+          >
+            ☰
+          </button>
+
 
           <div className="w-full max-w-3xl mx-auto py-6 space-y-10">
 
@@ -128,7 +134,7 @@ function About() {
                   rel="noopener noreferrer"
                   className="hover:underline"
                 >
-                  {<FaGithub className="text-3xl"/>}
+                  {<FaGithub className="text-3xl" />}
                 </a>
 
                 <a
@@ -137,7 +143,7 @@ function About() {
                   rel="noopener noreferrer"
                   className="hover:underline"
                 >
-                  {<MdOutlineEmail className="text-3xl"/>}
+                  {<MdOutlineEmail className="text-3xl" />}
                 </a>
               </div>
             </div>
