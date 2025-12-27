@@ -50,9 +50,10 @@ function About() {
         <div className="p-6 space-y-8">
 
           {/* Mobile menu button */}
-          <button
-            onClick={() => setNavOpen(true)}
-            className="
+          {!navOpen && (
+            <button
+              onClick={() => setNavOpen(true)}
+              className="
               fixed top-4 left-4 z-50
               md:hidden
               text-slate-300 text-2xl
@@ -60,9 +61,11 @@ function About() {
               bg-slate-900/90 backdrop-blur
               shadow-lg
             "
-          >
-            ☰
-          </button>
+            >
+              ☰
+            </button>
+          )}
+
 
 
           <div className="w-full max-w-3xl mx-auto py-6 space-y-10">

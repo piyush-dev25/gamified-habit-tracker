@@ -58,9 +58,10 @@ function Settings() {
         <div className="p-6 space-y-8 max-w-2xl mx-auto">
 
           {/* Mobile menu button */}
-          <button
-            onClick={() => setNavOpen(true)}
-            className="
+          {!navOpen && (
+            <button
+              onClick={() => setNavOpen(true)}
+              className="
               fixed top-4 left-4 z-50
               md:hidden
               text-slate-300 text-2xl
@@ -68,10 +69,10 @@ function Settings() {
               bg-slate-900/90 backdrop-blur
               shadow-lg
             "
-          >
-            ☰
-          </button>
-
+            >
+              ☰
+            </button>
+          )}
 
           <h1 className="text-3xl font-bold">Settings</h1>
 
